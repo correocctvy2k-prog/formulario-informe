@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario - Informe Mensual de Seguridad</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        .form-container {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        
+        .section-header:hover {
+            background: linear-gradient(135deg, #2980b9 0%, #3498db 100%);
+        }
+        
+        .section-header .toggle {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .section-content {
+            padding: 25px;
+            display: block;
+        }
+        
+        .section-content.collapsed {
+            display: none;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .form-row-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #2c3e50;
+            font-size: 0.95rem;
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="date"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: #fafafa;
+        }
+        
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #3498db;
+            background: white;
+            box-shadow: 0 0 10px rgba(52, 152, 219, 0.1);
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .file-upload {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+        }
+        
+        .file-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px dashed #3498db;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+            color: #3498db;
+            font-weight: 500;
+        }
+        
+        .file-input:hover {
+            border-color: #2980b9;
+            background: #e3f2fd;
+        }
+        
+        .file-input input[type="file"] {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .preview-container {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+        }
+        
+        .image-preview {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+        }
+        
+        .image-preview img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+        }
+        
+        .image-preview .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 204, 113, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(46, 204, 113, 0.4);
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        
+        .submit-section {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid #e0e0e0;
+            margin-top: 40px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #3498db, #2ecc71);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .form-row,
+            .form-row-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+                border-radius: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Generador de Informe de Seguridad</h1>
+            <p>Complete la información para generar el informe mensual automatizado</p>
+        </div>
+        
+        <form id="securityReportForm" class="form-container">
+            <!-- Barra de Progreso -->
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            
+            <!-- INFORMACIÓN GENERAL -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📅 Información General</span>
+                    <span class="toggle">−</span>
+                </div>
+                <div class="section-content">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="mes">Mes del Reporte:</label>
+                            <select id="mes" name="mes" required>
+                                <option value="">Seleccione el mes</option>
+                                <option value="Enero">Enero</option>
+                                <option value="Febrero">Febrero</option>
+                                <option value="Marzo">Marzo</option>
+                                <option value="Abril">Abril</option>
+                                <option value="Mayo">Mayo</option>
+                                <option value="Junio">Junio</option>
+                                <option value="Julio">Julio</option>
+                                <option value="Agosto">Agosto</option>
+                                <option value="Septiembre">Septiembre</option>
+                                <option value="Octubre">Octubre</option>
+                                <option value="Noviembre">Noviembre</option>
+                                <option value="Diciembre">Diciembre</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="anno">Año:</label>
+                            <input type="number" id="anno" name="anno" value="2025" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="fecha_elaboracion">Fecha de Elaboración:</label>
+                            <input type="date" id="fecha_elaboracion" name="fecha_elaboracion" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="responsable">Responsable del Informe:</label>
+                            <input type="text" id="responsable" name="responsable" placeholder="Nombre del responsable" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DIRECTORIO ACTIVO -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔐 Directorio Activo</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-group">
+                        <label for="total_usuarios">Total de Usuarios Registrados:</label>
+                        <input type="number" id="total_usuarios" name="total_usuarios" placeholder="Ej: 189">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_respaldos">Descripción del Estado de Respaldos:</label>
+                        <textarea id="descripcion_respaldos" name="descripcion_respaldos" placeholder="Describa el estado actual de los respaldos del Directorio Activo..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_supervision">Descripción de Supervisión de Controladores:</label>
+                        <textarea id="descripcion_supervision" name="descripcion_supervision" placeholder="Estado de controladores, sincronización, recursos..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imágenes del Directorio Activo:</label>
+                        <div class="file-upload">
+                            <div class="file-input">
+                                <input type="file" multiple accept="image/*" onchange="handleFileUpload(this, 'da_images')">
+                                📁 Subir imágenes (Respaldos, Controladores, Sincronización, Gráfico de Usuarios)
+                            </div>
+                        </div>
+                        <div class="preview-container" id="da_images"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KASPERSKY -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🛡️ Consola Kaspersky</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="actualizaciones_aprobadas">Actualizaciones Aprobadas:</label>
+                            <input type="number" id="actualizaciones_aprobadas" name="actualizaciones_aprobadas" placeholder="Ej: 395">
+                        </div>
+                        <div class="form-group">
+                            <label for="vulnerabilidades_corregidas">Vulnerabilidades Corregidas:</label>
+                            <input type="number" id="vulnerabilidades_corregidas" name="vulnerabilidades_corregidas" placeholder="Ej: 2018">
+                        </div>
+                        <div class="form-group">
+                            <label for="porcentaje_anual">% del Total Anual:</label>
+                            <input type="number" step="0.01" id="porcentaje_anual" name="porcentaje_anual" placeholder="Ej: 99.75">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_actualizaciones">Descripción de Actualizaciones:</label>
+                        <textarea id="descripcion_actualizaciones" name="descripcion_actualizaciones" placeholder="Detalle del proceso de actualizaciones y vulnerabilidades..."></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="total_amenazas">Total de Amenazas Detectadas:</label>
+                            <input type="number" id="total_amenazas" name="total_amenazas" placeholder="Ej: 4">
+                        </div>
+                        <div class="form-group">
+                            <label for="detalle_amenazas">Detalle de Amenazas:</label>
+                            <input type="text" id="detalle_amenazas" name="detalle_amenazas" placeholder="Ej: 2 phishing, 1 malware">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="licencias_utilizadas">Licencias Utilizadas:</label>
+                            <input type="number" id="licencias_utilizadas" name="licencias_utilizadas" placeholder="Ej: 156">
+                        </div>
+                        <div class="form-group">
+                            <label for="porcentaje_licencias">% de Uso de Licencias:</label>
+                            <input type="number" id="porcentaje_licencias" name="porcentaje_licencias" placeholder="Ej: 78">
+                        </div>
+                        <div class="form-group">
+                            <label for="licencias_disponibles">Licencias Disponibles:</label>
+                            <input type="number" id="licencias_disponibles" name="licencias_disponibles" placeholder="Ej: 44">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imágenes de Kaspersky:</label>
+                        <div class="file-upload">
+                            <div class="file-input">
+                                <input type="file" multiple accept="image/*" onchange="handleFileUpload(this, 'kaspersky_images')">
+                                📁 Subir gráficos (Vulnerabilidades, Actualizaciones, Módulos, Licencias)
+                            </div>
+                        </div>
+                        <div class="preview-container" id="kaspersky_images"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORTIANALYZER -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔍 FortiAnalyzer</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-group">
+                        <label for="estado_amenazas">Estado de Amenazas:</label>
+                        <select id="estado_amenazas" name="estado_amenazas">
+                            <option value="Sin amenazas detectadas">Sin amenazas detectadas</option>
+                            <option value="Amenazas detectadas y neutralizadas">Amenazas detectadas y neutralizadas</option>
+                            <option value="Amenazas en investigación">Amenazas en investigación</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_fortianalyzer">Descripción del Análisis:</label>
+                        <textarea id="descripcion_fortianalyzer" name="descripcion_fortianalyzer" placeholder="Resumen del análisis de FortiAnalyzer este mes..."></textarea>
+                    </div>
+                    
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="categoria_principal">Categoría Más Bloqueada:</label>
+                            <input type="text" id="categoria_principal" name="categoria_principal" placeholder="Ej: Information Technology">
+                        </div>
+                        <div class="form-group">
+                            <label for="bloqueos_categoria">Bloqueos de la Categoría:</label>
+                            <input type="text" id="bloqueos_categoria" name="bloqueos_categoria" placeholder="Ej: 26,000,000">
+                        </div>
+                        <div class="form-group">
+                            <label for="porcentaje_categoria">% de la Categoría:</label>
+                            <input type="number" step="0.01" id="porcentaje_categoria" name="porcentaje_categoria" placeholder="Ej: 75.66">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imágenes de FortiAnalyzer:</label>
+                        <div class="file-upload">
+                            <div class="file-input">
+                                <input type="file" multiple accept="image/*" onchange="handleFileUpload(this, 'fortianalyzer_images')">
+                                📁 Subir imágenes (Dashboard, IPs Bloqueadas, Gráficos de Categorías)
+                            </div>
+                        </div>
+                        <div class="preview-container" id="fortianalyzer_images"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- FORTIMAIL -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📧 FortiMail</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="correos_entrantes">Correos Entrantes:</label>
+                            <input type="number" id="correos_entrantes" name="correos_entrantes" placeholder="Ej: 28192">
+                        </div>
+                        <div class="form-group">
+                            <label for="correos_salientes">Correos Salientes:</label>
+                            <input type="number" id="correos_salientes" name="correos_salientes" placeholder="Ej: 3100">
+                        </div>
+                        <div class="form-group">
+                            <label for="amenazas_email">Amenazas Detectadas:</label>
+                            <input type="number" id="amenazas_email" name="amenazas_email" placeholder="Ej: 2">
+                        </div>
+                    </div>
+                    
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Estadísticas Acumuladas del Año:</h4>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="total_correos_anno">Total Correos del Año:</label>
+                            <input type="number" id="total_correos_anno" name="total_correos_anno" placeholder="Ej: 87194">
+                        </div>
+                        <div class="form-group">
+                            <label for="total_amenazas_anno">Total Amenazas del Año:</label>
+                            <input type="number" id="total_amenazas_anno" name="total_amenazas_anno" placeholder="Ej: 3">
+                        </div>
+                        <div class="form-group">
+                            <label for="porcentaje_amenazas_anno">% Amenazas del Año:</label>
+                            <input type="number" step="0.001" id="porcentaje_amenazas_anno" name="porcentaje_amenazas_anno" placeholder="Ej: 0.003">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_fortimail">Descripción del Análisis de Correos:</label>
+                        <textarea id="descripcion_fortimail" name="descripcion_fortimail" placeholder="Análisis de tendencias y patrones en el correo electrónico..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imágenes de FortiMail:</label>
+                        <div class="file-upload">
+                            <div class="file-input">
+                                <input type="file" multiple accept="image/*" onchange="handleFileUpload(this, 'fortimail_images')">
+                                📁 Subir imágenes (Dashboard, Estadísticas, Análisis)
+                            </div>
+                        </div>
+                        <div class="preview-container" id="fortimail_images"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGURIDAD ELECTRÓNICA -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📹 Seguridad Electrónica</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-group">
+                        <label for="seccion_especial_titulo">Título de Sección Especial (si aplica):</label>
+                        <input type="text" id="seccion_especial_titulo" name="seccion_especial_titulo" placeholder="Ej: SERVIDOR DSS, SISTEMA DE ALARMAS">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_seccion_especial">Descripción de Sección Especial:</label>
+                        <textarea id="descripcion_seccion_especial" name="descripcion_seccion_especial" placeholder="Descripción detallada de proyectos especiales o implementaciones..."></textarea>
+                    </div>
+                    
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Instalaciones CCTV:</h4>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="punto_instalacion_1">Punto de Instalación 1:</label>
+                            <input type="text" id="punto_instalacion_1" name="punto_instalacion_1" placeholder="Ej: LA NOVENA FLORIDA">
+                        </div>
+                        <div class="form-group">
+                            <label for="punto_instalacion_2">Punto de Instalación 2:</label>
+                            <input type="text" id="punto_instalacion_2" name="punto_instalacion_2" placeholder="Ej: PIKOS II">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_instalaciones">Descripción de Nuevas Instalaciones:</label>
+                        <textarea id="descripcion_instalaciones" name="descripcion_instalaciones" placeholder="Detalle de las instalaciones realizadas este mes..."></textarea>
+                    </div>
+                    
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Mantenimiento CCTV:</h4>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label for="mantenimientos_realizados">Mantenimientos Realizados:</label>
+                            <input type="number" id="mantenimientos_realizados" name="mantenimientos_realizados" placeholder="Ej: 17">
+                        </div>
+                        <div class="form-group">
+                            <label for="mantenimientos_programados">Mantenimientos Programados:</label>
+                            <input type="number" id="mantenimientos_programados" name="mantenimientos_programados" placeholder="Ej: 18">
+                        </div>
+                        <div class="form-group">
+                            <label for="puntos_pendientes">Puntos Pendientes:</label>
+                            <input type="text" id="puntos_pendientes" name="puntos_pendientes" placeholder="Ej: La Herradura">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="descripcion_mantenimiento">Descripción del Mantenimiento:</label>
+                        <textarea id="descripcion_mantenimiento" name="descripcion_mantenimiento" placeholder="Resumen del cumplimiento del plan de mantenimiento..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imágenes de Seguridad Electrónica:</label>
+                        <div class="file-upload">
+                            <div class="file-input">
+                                <input type="file" multiple accept="image/*" onchange="handleFileUpload(this, 'electronica_images')">
+                                📁 Subir imágenes (Instalaciones, Mantenimientos, Sistemas, Tablas)
+                            </div>
+                        </div>
+                        <div class="preview-container" id="electronica_images"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SEGURIDAD DE LA INFORMACIÓN -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🔒 Seguridad de la Información</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-group">
+                        <label for="titulo_seccion_info_1">Título Sección 1:</label>
+                        <input type="text" id="titulo_seccion_info_1" name="titulo_seccion_info_1" placeholder="Ej: Políticas de Seguridad">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contenido_seccion_info_1">Contenido Sección 1:</label>
+                        <textarea id="contenido_seccion_info_1" name="contenido_seccion_info_1" placeholder="Descripción del primer tema de seguridad de la información..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="titulo_seccion_info_2">Título Sección 2:</label>
+                        <input type="text" id="titulo_seccion_info_2" name="titulo_seccion_info_2" placeholder="Ej: Capacitaciones">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="contenido_seccion_info_2">Contenido Sección 2:</label>
+                        <textarea id="contenido_seccion_info_2" name="contenido_seccion_info_2" placeholder="Descripción del segundo tema de seguridad de la información..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Imágenes de Seguridad de la Información:</label>
+                        <div class="file-upload">
+                            <div class="file-input">
+                                <input type="file" multiple accept="image/*" onchange="handleFileUpload(this, 'info_images')">
+                                📁 Subir imágenes relevantes
+                            </div>
+                        </div>
+                        <div class="preview-container" id="info_images"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CONCLUSIONES -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>📋 Conclusiones y Recomendaciones</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Ciberseguridad:</h4>
+                    <div class="form-group">
+                        <label for="conclusiones_ciber">Conclusiones de Ciberseguridad:</label>
+                        <textarea id="conclusiones_ciber" name="conclusiones_ciber" placeholder="Principales conclusiones y recomendaciones para ciberseguridad..."></textarea>
+                    </div>
+                    
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Seguridad Electrónica:</h4>
+                    <div class="form-group">
+                        <label for="conclusiones_electronica">Conclusiones de Seguridad Electrónica:</label>
+                        <textarea id="conclusiones_electronica" name="conclusiones_electronica" placeholder="Principales conclusiones y recomendaciones para seguridad electrónica..."></textarea>
+                    </div>
+                    
+                    <h4 style="margin: 20px 0 10px 0; color: #2c3e50;">Seguridad de la Información:</h4>
+                    <div class="form-group">
+                        <label for="conclusiones_informacion">Conclusiones de Seguridad de la Información:</label>
+                        <textarea id="conclusiones_informacion" name="conclusiones_informacion" placeholder="Principales conclusiones y recomendaciones para seguridad de la información..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PLAN DE ACCIÓN -->
+            <div class="section">
+                <div class="section-header" onclick="toggleSection(this)">
+                    <span>🎯 Plan de Acción Próximo Mes</span>
+                    <span class="toggle">+</span>
+                </div>
+                <div class="section-content collapsed">
+                    <div class="form-group">
+                        <label for="actividades_programadas">Actividades Programadas:</label>
+                        <textarea id="actividades_programadas" name="actividades_programadas" placeholder="Liste las actividades programadas para el próximo mes..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="seguimientos_pendientes">Seguimientos Pendientes:</label>
+                        <textarea id="seguimientos_pendientes" name="seguimientos_pendientes" placeholder="Liste los seguimientos pendientes..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SUBMIT SECTION -->
+            <div class="submit-section">
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    🚀 Generar Informe de Seguridad
+                </button>
+                <button type="button" class="btn-secondary" onclick="resetForm()">
+                    🔄 Limpiar Formulario
+                </button>
+                
+                <div id="loadingMessage" style="display: none; margin-top: 20px;">
+                    <p>⏳ Generando informe... Por favor espere.</p>
+                </div>
+                
+                <div id="successMessage" style="display: none; margin-top: 20px; color: #27ae60;">
+                    <p>✅ Informe generado exitosamente!</p>
+                </div>
+                
+                <div id="errorMessage" style="display: none; margin-top: 20px; color: #e74c3c;">
+                    <p>❌ Error al generar el informe. Intente nuevamente.</p>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Variables globales
+        let uploadedFiles = {};
+        let totalFields = 0;
+        let filledFields = 0;
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            countTotalFields();
+            updateProgress();
+            
+            // Agregar listeners para actualizar progreso
+            const inputs = document.querySelectorAll('input, textarea, select');
+            inputs.forEach(input => {
+                input.addEventListener('input', updateProgress);
+                input.addEventListener('change', updateProgress);
+            });
+        });
+
+        // Función para mostrar/ocultar secciones
+        function toggleSection(header) {
+            const content = header.nextElementSibling;
+            const toggle = header.querySelector('.toggle');
+            
+            if (content.classList.contains('collapsed')) {
+                content.classList.remove('collapsed');
+                toggle.textContent = '−';
+            } else {
+                content.classList.add('collapsed');
+                toggle.textContent = '+';
+            }
+        }
+
+        // Función para manejar subida de archivos
+        function handleFileUpload(input, containerId) {
+            const files = input.files;
+            const container = document.getElementById(containerId);
+            
+            if (!uploadedFiles[containerId]) {
+                uploadedFiles[containerId] = [];
+            }
+            
+            Array.from(files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const fileData = {
+                        name: file.name,
+                        data: e.target.result,
+                        type: file.type,
+                        size: file.size,
+                        category: containerId
+                    };
+                    
+                    uploadedFiles[containerId].push(fileData);
+                    displayImagePreview(container, fileData, uploadedFiles[containerId].length - 1, containerId);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Función para mostrar vista previa de imágenes
+        function displayImagePreview(container, fileData, index, containerId) {
+            const preview = document.createElement('div');
+            preview.className = 'image-preview';
+            preview.innerHTML = `
+                <img src="${fileData.data}" alt="${fileData.name}">
+                <button type="button" class="remove-btn" onclick="removeImage('${containerId}', ${index})">×</button>
+                <p style="font-size: 12px; padding: 5px; margin: 0;">${fileData.name}</p>
+            `;
+            container.appendChild(preview);
+        }
+
+        // Función para remover imagen
+        function removeImage(containerId, index) {
+            uploadedFiles[containerId].splice(index, 1);
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            // Volver a mostrar todas las imágenes
+            uploadedFiles[containerId].forEach((fileData, newIndex) => {
+                displayImagePreview(container, fileData, newIndex, containerId);
+            });
+        }
+
+        // Función para contar campos totales
+        function countTotalFields() {
+            const inputs = document.querySelectorAll('input[required], textarea, select');
+            totalFields = inputs.length;
+        }
+
+        // Función para actualizar la barra de progreso
+        function updateProgress() {
+            const inputs = document.querySelectorAll('input, textarea, select');
+            filledFields = 0;
+            
+            inputs.forEach(input => {
+                if (input.value && input.value.trim() !== '') {
+                    filledFields++;
+                }
+            });
+            
+            const progress = (filledFields / totalFields) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Función para limpiar formulario
+        function resetForm() {
+            if (confirm('¿Está seguro de que desea limpiar todo el formulario?')) {
+                document.getElementById('securityReportForm').reset();
+                uploadedFiles = {};
+                
+                // Limpiar previsualizaciones de imágenes
+                const previewContainers = document.querySelectorAll('.preview-container');
+                previewContainers.forEach(container => {
+                    container.innerHTML = '';
+                });
+                
+                updateProgress();
+            }
+        }
+
+        // Función para enviar formulario
+        document.getElementById('securityReportForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const loadingMsg = document.getElementById('loadingMessage');
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            
+            // Ocultar mensajes previos
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+            
+            // Mostrar loading
+            submitBtn.disabled = true;
+            loadingMsg.style.display = 'block';
+            
+            try {
+                // Recopilar datos del formulario
+                const formData = new FormData(this);
+                
+                // Agregar archivos al FormData
+                const allFiles = [];
+                Object.keys(uploadedFiles).forEach(category => {
+                    uploadedFiles[category].forEach(file => {
+                        allFiles.push(file);
+                    });
+                });
+                
+                // Convertir a JSON para enviar al webhook
+                const data = {};
+                for (let [key, value] of formData.entries()) {
+                    data[key] = value;
+                }
+                data.files = allFiles;
+                
+                // Enviar al webhook de n8n
+                const response = await fetch('https://n8n.srv933145.hstgr.cloud/webhook-test/form_seguridad', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    loadingMsg.style.display = 'none';
+                    successMsg.style.display = 'block';
+                    
+                    // Opcional: descargar el archivo generado
+                    if (result.downloadUrl) {
+                        window.open(result.downloadUrl, '_blank');
+                    }
+                } else {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loadingMsg.style.display = 'none';
+                errorMsg.style.display = 'block';
+            } finally {
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
